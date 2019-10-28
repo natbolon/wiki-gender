@@ -48,4 +48,5 @@ The idea is to filter the articles of the wikipedia and keep only the biographie
 # Questions for TAs
 * How can we access and use the wikipedia dataset in the cluster?
 * Is the scope of the project too wide? 
+* Can we use the Subjectivity Lexicon from [https://mpqa.cs.pitt.edu/lexicons/subj_lexicon/] in our study to classify words? 
 
