@@ -16,6 +16,7 @@ By using the biography articles in English Wikipedia, the goal of this study is 
 - Is there an asymmetry in the way men and women are portrayed in the wikipedia?
 - Have we changed along time the choice of words use to describe people? 
 - Are there sectors/topics more likely to introduce language biases than others? 
+- How subjective are the adjectives used to describe the people?
 
 
 # Dataset
