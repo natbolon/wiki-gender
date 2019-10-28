@@ -6,6 +6,8 @@ Wikipedia has become one of the greatest sources of information in the last deca
 
 By using the biography articles in English Wikipedia, the goal of this study is to look for possible asymmetries in the way a person is described based on its gender. Moreover, we want to study the relation between these possible biases and the context in which this person is described: year, topic to which the person is related, culture, etc. with the idea of better understanding gender biases in our language.
 
+To handle those categories which are outside of the binary classification, we will perform a first evaluation of the available data for completeness of the study.
+
 # Research questions
 - Is there an asymmetry in the way men and women are portrayed in the wikipedia?
 - Have we changed along time the choice of words use to describe people?
@@ -18,8 +20,6 @@ By using the biography articles in English Wikipedia, the goal of this study is 
 We will use the overview of biographies about men and women in the English Wikipedia. The overview (also known as lead section) is the first section of an article. According to Wikipedia, it should stand on its own as a concise overview of the article’s topic. Wikipedia editors need to focus on what they consider most important about the person, and biases are likely to play a role in this selection process.
 
 The idea is to filter the articles of the wikipedia and keep only the biographies (we expect it will be approximately 25% of the whole wikipedia).
-
-https://github.com/DavidGrangier/wikipedia-biography-dataset extra dataset for nlp analysis on biographies - already parsed (if needed)
 
 
 # A list of internal milestones up until project milestone 2
@@ -37,6 +37,7 @@ https://github.com/DavidGrangier/wikipedia-biography-dataset extra dataset for n
 
 - Explore the dataset and perform an initial NLP analysis
 - Agree on the metrics
+- Explore possibilities for the data visualization.
 
 **Week 4 (25th November):**
 
@@ -46,3 +47,5 @@ https://github.com/DavidGrangier/wikipedia-biography-dataset extra dataset for n
 
 # Questions for TAs
 * How can we access and use the wikipedia dataset in the cluster?
+* Is the scope of the project too wide? 
+
