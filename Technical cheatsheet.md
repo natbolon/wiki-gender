@@ -53,3 +53,15 @@
 
    (click on the **ID** of your job)
 
+## Run spark-python files locally
+
+1. go to where the ada environment is installed (usually in Anaconda3/envs/ada) and run:
+
+   ```
+   ./bin/spark-submit \
+     --master local \
+     --packages com.databricks:spark-xml_2.11:0.6.0 \
+     {absolute path to python file}   
+   ```
+
+   
