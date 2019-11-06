@@ -34,7 +34,7 @@
 
 1. copy your python file to the cluster (as mentioned above)
 
-   ``scp dataset.py {username}@iccluster040.iccluster.epfl.ch:~`
+   `scp dataset.py {username}@iccluster040.iccluster.epfl.ch:~`
 
 2. connect to the cluster
 
