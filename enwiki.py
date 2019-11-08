@@ -11,7 +11,7 @@ spark = SparkSession.builder.getOrCreate()
 sc = spark.sparkContext
 
 # absolute path of the file - CHANGE WHEN RUN LOCAL
-file = os.path.join(DATA_PATH, "enwiki_1000_lines.xml")
+file = os.path.join(DATA_PATH, "enwiki_5000_lines.xml")
 df = spark.read.format("com.databricks.spark.xml") \
 				.options(rowTag="page") \
 				.load(file)
@@ -20,14 +20,16 @@ print(df.show())
 
 print(df.printSchema())
 
+df = df.filter("redirect._title is null")
+
 title_revision = df.select("title", "revision.text._VALUE").toDF("title", "text")
 
-title_revision = title_revision.where(~col("text").startswith("#REDIRECT"))
+#title_revision = title_revision.where(~col("text").startswith("#REDIRECT"))
 
 print(title_revision.show())
 
 starting_expr = re.compile("'''")
-ending_expr = re.compile("== ")
+ending_expr = re.compile("==")
 
 def get_overview(text):
 	starting_idx = starting_expr.search(text).span()[0]
