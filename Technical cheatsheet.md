@@ -47,9 +47,11 @@
 3. run the command:
 
    ```
-    ../../bin/spark-submit  \
-    --master yarn   \
-    --packages com.databricks:spark-xml_2.11:0.6.0   \
+   spark-submit \
+    --master yarn \
+    --packages com.databricks:spark-xml_2.11:0.6.0 \
+    --num-executors 50 \
+    --executor-memory 4g \
     dataset.py 
    ```
 
