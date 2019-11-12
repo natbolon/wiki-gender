@@ -37,13 +37,17 @@ def main(**params):
 
 	# read the wikidata codes
 	qid_df = spark.read.csv(QID_DATA, header=True)
-	wikidata_qid = qid_df.select("qid").rdd.flatMap(lambda x: x).collect()
+	qid_df = qid_df.select("qid", "gender").toDF("title", "gender")
 
-	if local:
-		wikidata_qid = wikidata_qid[:500]
+	people_df = qid_df.join(df,['title'],how='inner')
 
-	# merge on Q-code
-	people_df = df.where(df.title.isin(wikidata_qid))
+	# wikidata_qid = qid_df.select("qid").rdd.flatMap(lambda x: x).collect()
+	#
+	# if local:
+	# 	wikidata_qid = wikidata_qid[:500]
+	#
+	# # merge on Q-code
+	# people_df = df.where(df.title.isin(wikidata_qid))
 
 	if local:
 		print(people_df.show())
