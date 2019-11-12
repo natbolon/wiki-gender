@@ -52,6 +52,10 @@
     --packages com.databricks:spark-xml_2.11:0.6.0   \
     dataset.py 
    ```
+   or to specify the workers
+   ```
+   spark-submit --master yarn --packages com.databricks:spark-xml_2.11:0.7.0 --num-executors 70 --executor-memory 6g filename.py
+   ```
 
 4. you can see the process of the job you submitted here: http://iccluster040.iccluster.epfl.ch:8088/cluster
 
