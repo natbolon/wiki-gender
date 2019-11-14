@@ -9,9 +9,15 @@ from params import *
 
 def only_enwiki(line): 
 	d = json.loads(line._VALUE)
-	if 'enwiki' in d['sitelinks']: 
-		return True
-	else:
+	try:
+		sl = d['sitelinks']
+		l = d['labels']
+		c = d['claims']
+		if "enwiki" in sl and "en" in l and "P21" in c:
+			return True
+		else:
+			return False
+	except KeyError: 
 		return False
 
 
@@ -70,14 +76,19 @@ def main(**params):
 
 	people_filtered = people_df.select("_VALUE").rdd.filter(only_enwiki)
 
-	people_df = spark.read.json(people_filtered.map(lambda r: r["_VALUE"]))
+	people_fil_df = spark.read.json(people_filtered.map(lambda r: r["_VALUE"]))
 
-	people_df.show()
+	people_fil_df = people_fil_df.select("labels.en.value", "sitelinks.enwiki.title", "claims.P21.mainsnak.datavalue.value.id").toDF("label", "title", "gender")
 
-	people_df = people_df.select("labels.en.value", "sitelinks.enwiki.title", "claims.P21.mainsnak.datavalue.value.id").toDF("label", "title", "gender")
+	if local:
+		people_fil_df.show()
+	else:
+		print("="*50)
+		print("Select label, title and gender Wikidata!")
+		print("="*50)
 
 	# save the df
-	people_df.write.mode('overwrite').json(os.path.join(LOCAL_PATH, "people_wikidata.json"))
+	people_fil_df.write.mode('overwrite').json(os.path.join(LOCAL_PATH, "people_wikidata.json"))
 
 	# woohoo!
 	print("!!!!!!!!!!!!!!!")

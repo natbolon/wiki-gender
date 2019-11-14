@@ -7,9 +7,22 @@ import re
 from params import *
 
 
-def get_overview(text, starting_expr, ending_expr):
-	starting_idx = starting_expr.search(text).span()[0]
-	ending_idx = ending_expr.search(text).span()[0]
+def get_overview(text):
+	starting_expr = re.compile("'''")
+	ending_expr = re.compile("==")
+	ending_expr_cat = re.compile("\[\[Category:") # entries that don't have another section 
+	
+	try:
+		starting_idx = starting_expr.search(text).span()[0]
+	except:
+		starting_idx = None
+	try:
+		ending_idx = ending_expr.search(text).span()[0]
+	except:
+		try:
+			ending_idx = ending_expr_cat.search(text).span()[0]
+		except:
+			ending_idx = None
 	return text[starting_idx:ending_idx]
 
 
@@ -34,17 +47,39 @@ def main(**params):
 
 	print(df.printSchema())
 
-	starting_expr = re.compile("'''")
-	ending_expr = re.compile("==")
-
-	overview_df = df.rdd.map(lambda r: Row(r["title"], r['label'], r['gender'], get_overview(r["text"], starting_expr, ending_expr))).toDF()
+	overview_df = df.rdd.map(lambda r: Row(r["title"], r['label'], r['gender'], get_overview(r["text"]))).toDF()
 	overview_df = overview_df.toDF("title", "label", "gender", "overview")
 
 	if local:
 		print(overview_df.show())
+		print(overview_df.count())
 	else:
 		print("="*50)
 		print("Got enwiki overview")
+		print(overview_df.count())
+		print("="*50)
+
+	# filter people without overview
+	overview_df = overview_df.filter(col("overview") != '')
+
+	if local:
+		print(overview_df.count())
+	else:
+		print("="*50)
+		print("Got overview filtered")
+		print(overview_df.count())
+		print("="*50)
+
+	# filter people without gender
+	overview_df = overview_df.filter(col("gender")[0] != '')
+
+	if local:
+		print(overview_df.count())
+		overview_df.show()
+	else:
+		print("="*50)
+		print("Got overview filtered")
+		print(overview_df.count())
 		print("="*50)
 
 	# save the df
