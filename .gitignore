@@ -1,3 +1,7 @@
 .DS_Store
 __pycache__
 run_local.sh
+.ipynb_checkpoints
+*.json
+data/gender-index-data-2017-02-26.csv
+data/gender-index-data-2019-11-04.csv
