@@ -11,10 +11,12 @@ df_en = df[df.site_links.str.contains("enwiki", na=False)]
 MALE = "Q6581097|"
 FEMALE = "Q6581072|"
 
-df_gender = df_en[(df_en.gender == MALE) | (df_en.gender == FEMALE)]
+# df_gender = df_en[(df_en.gender == MALE) | (df_en.gender == FEMALE)]
+# filter the NaN gender (where we have no info)
+df_gender = df_en[df_en.gender.notnull()]
 
 # save the code and the gender to a new csv
-df_gender[["qid", "gender"]].to_csv("../data/qid_people_wikidata.csv")
+df_gender[["qid", "gender", "occupation"]].to_csv("../data/qid_people_wikidata.csv")
 
 print(df_gender[["qid", "gender"]].head())
 
