@@ -34,7 +34,7 @@ def main(**params):
 	print(df.printSchema())
 
 	df = df.filter("redirect._title is null")
-	df_enwiki_title = df.select("title", "revision.text._VALUE").toDF("title", "text")
+	df_enwiki_title = df.select("title", "revision.text._VALUE").toDF("wiki-title", "text")
 
 	if local:
 		print(df_enwiki_title.show())
@@ -46,7 +46,7 @@ def main(**params):
 	# read the wikidata codes
 	df_wikidata = spark.read.json(WIKIDATA_PEOPLE)
 
-	df_biographies = df_wikidata.join(df_enwiki_title,['title'],how='inner')
+	df_biographies = df_wikidata.join(df_enwiki_title,['wiki-title'],how='inner')
 
 	if local:
 		print(df_biographies.show())

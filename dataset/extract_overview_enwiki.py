@@ -47,8 +47,8 @@ def main(**params):
 
 	print(df.printSchema())
 
-	overview_df = df.rdd.map(lambda r: Row(r["title"], r['label'], r['gender'], get_overview(r["text"]))).toDF()
-	overview_df = overview_df.toDF("title", "label", "gender", "overview")
+	overview_df = df.rdd.map(lambda r: Row(r["id"], r["name"], r["wiki-title"], r["gender"], r["occupation"], get_overview(r["text"]))).toDF()
+	overview_df = overview_df.toDF("id", "name", "wiki-title", "gender", "occupation", "overview")
 
 	if local:
 		print(overview_df.show())
@@ -64,18 +64,6 @@ def main(**params):
 
 	if local:
 		print(overview_df.count())
-	else:
-		print("="*50)
-		print("Got overview filtered")
-		print(overview_df.count())
-		print("="*50)
-
-	# filter people without gender
-	overview_df = overview_df.filter(col("gender")[0] != '')
-
-	if local:
-		print(overview_df.count())
-		overview_df.show()
 	else:
 		print("="*50)
 		print("Got overview filtered")

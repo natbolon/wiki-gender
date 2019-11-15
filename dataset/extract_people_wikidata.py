@@ -12,8 +12,7 @@ def only_enwiki(line):
 	try:
 		sl = d['sitelinks']
 		l = d['labels']
-		c = d['claims']
-		if "enwiki" in sl and "en" in l and "P21" in c:
+		if "enwiki" in sl and "en" in l:
 			return True
 		else:
 			return False
@@ -51,17 +50,13 @@ def main(**params):
 
 	# read the wikidata codes
 	qid_df = spark.read.csv(QID_DATA, header=True)
-	qid_df = qid_df.select("qid", "gender").toDF("title", "gender")
+
+	if local:
+		print(qid_df.show())
+
+	qid_df = qid_df.select("qid", "gender", "occupation").toDF("title", "gender", "occupation")
 
 	people_df = qid_df.join(df,['title'],how='inner')
-
-	# wikidata_qid = qid_df.select("qid").rdd.flatMap(lambda x: x).collect()
-	#
-	# if local:
-	# 	wikidata_qid = wikidata_qid[:500]
-	#
-	# # merge on Q-code
-	# people_df = df.where(df.title.isin(wikidata_qid))
 
 	people_df.printSchema()
 
@@ -76,19 +71,29 @@ def main(**params):
 
 	people_filtered = people_df.select("_VALUE").rdd.filter(only_enwiki)
 
-	people_fil_df = spark.read.json(people_filtered.map(lambda r: r["_VALUE"]))
+	name_wiki_df = spark.read.json(people_filtered.map(lambda r: r["_VALUE"]))
 
-	people_fil_df = people_fil_df.select("labels.en.value", "sitelinks.enwiki.title", "claims.P21.mainsnak.datavalue.value.id").toDF("label", "title", "gender")
+	name_wiki_df = name_wiki_df.select("id", "labels.en.value", "sitelinks.enwiki.title").toDF("id", "name", "wiki-title")
 
 	if local:
-		people_fil_df.show()
+		name_wiki_df.show()
+
+	attributes_df = people_df.select("title", "gender", "occupation").toDF("id", "gender", "occupation")
+
+	if local:
+		attributes_df.show()
+
+	wikidata_df = attributes_df.join(name_wiki_df, ['id'], how='inner')
+
+	if local:
+		wikidata_df.show()
 	else:
 		print("="*50)
-		print("Select label, title and gender Wikidata!")
+		print("Got all attributes from Wikidata!")
 		print("="*50)
 
 	# save the df
-	people_fil_df.write.mode('overwrite').json(os.path.join(LOCAL_PATH, "people_wikidata.json"))
+	wikidata_df.write.mode('overwrite').json(os.path.join(LOCAL_PATH, "people_wikidata.json"))
 
 	# woohoo!
 	print("!!!!!!!!!!!!!!!")
