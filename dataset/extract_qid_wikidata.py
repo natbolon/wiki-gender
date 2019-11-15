@@ -15,6 +15,12 @@ FEMALE = "Q6581072|"
 # filter the NaN gender (where we have no info)
 df_gender = df_en[df_en.gender.notnull()]
 
+# convert gender and occupation to array
+df_gender['gender'] = df_gender['gender'].str.split('|').map(lambda x: x[:-1])
+
+df_gender['occupation'] = df_gender['occupation'].apply(lambda d: d if isinstance(d, str) else "")
+df_gender['occupation'] = df_gender['occupation'].str.split('|').map(lambda x: x[:-1])
+
 # save the code and the gender to a new csv
 df_gender[["qid", "gender", "occupation"]].to_csv("../data/qid_people_wikidata.csv")
 
