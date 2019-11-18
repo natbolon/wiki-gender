@@ -7,6 +7,30 @@ import re
 from params import *
 
 
+def clear_overview(dirty_overview):
+    # remove the <ref> </ref>
+    overview = re.sub('<ref.*</ref>', '', dirty_overview)
+    overview = re.sub('<ref.*/>', '', overview)
+
+    # remove {{ }} and what is inside
+    overview = re.sub('[\{].*[\}]', '', overview)
+    
+    # reomve [[File: ]] and [[Image: ]] and what is inside
+    overview = re.sub('\[\[File:.*?\]\]', '', overview)
+    overview = re.sub('\[\[Image:.*?\]\]', '', overview)
+
+    # remove [[ ]] and keep what is inside and for the cases like [[abc | def]] keep only def and remove the rest
+    overview = re.sub(r'\[\[(?:[^\]|]*\|)?([^\]|]*)\]\]', r'\1', overview)
+
+    # remove ''' ''' 
+    overview = re.sub('\'{2,3}', '', overview)
+
+    # remove \n
+    overview = re.sub('\n', '', overview)
+    
+    return overview
+
+
 def get_overview(text):
 	starting_expr = re.compile("'''")
 	ending_expr = re.compile("==")
@@ -23,7 +47,9 @@ def get_overview(text):
 			ending_idx = ending_expr_cat.search(text).span()[0]
 		except:
 			ending_idx = None
-	return text[starting_idx:ending_idx]
+
+	overview = text[starting_idx:ending_idx]
+	return clear_overview(overview)
 
 
 def main(**params):
