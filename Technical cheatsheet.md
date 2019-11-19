@@ -74,4 +74,10 @@
      {absolute path to python file}   
    ```
 
-   
+-------------
+## Visualization Libraries
+
+- D3
+- Vega (specifies graphics in JSON format)
+- Vincent (Python-to-Vega translator)
+- Bokeh
