@@ -1,7 +1,7 @@
 from pyspark.sql import *
 from pyspark.sql.functions import *
 from pyspark import SparkContext
-from params import *
+from createDataset.params import *
 import os
 import json
 
@@ -14,7 +14,7 @@ def main(**params):
 	local = params['local']
 
 	if local:
-		LOCAL_PATH = "../../data/"
+		LOCAL_PATH = "../data/"
 		WIKI_DATA = os.path.join(LOCAL_PATH, "wikipedia_sample.json")
 
 	else: # running in the cluster
@@ -33,7 +33,7 @@ def main(**params):
 
 	data.printSchema()
 
-	print("In total there are {} biographies".format(data.count()))
+	data = data.withColumn("gender", explode(split(regexp_replace(regexp_replace(regexp_replace(regexp_replace(data['gender'], '\\[', ''), '\\]', ''), ' ', ''),"'", ""), ",")))
 
 	gender_counts = data.groupBy("gender").agg(count("*").alias("count")).sort(desc("count"))
 	gender_counts.show()
