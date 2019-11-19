@@ -16,7 +16,7 @@ def main(**params):
 
 	if local:
 		LOCAL_PATH = "../../data/"
-		WIKI_DATA = os.path.join(LOCAL_PATH, "wikipedia_sample.json")
+		WIKI_DATA = os.path.join(LOCAL_PATH, "overview_wikipedia.json")
 	else: # running in the cluster
 		LOCAL_PATH = "hdfs:///user/gullon/"
 		WIKI_DATA = os.path.join(LOCAL_PATH, "overview_wikipedia.json")

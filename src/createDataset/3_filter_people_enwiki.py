@@ -16,7 +16,7 @@ def main(**params):
 
 	if local:
 		LOCAL_PATH = "../../data/"
-		WIKIDATA_PEOPLE = os.path.join(LOCAL_PATH, "people_wikidata_sample.json")
+		WIKIDATA_PEOPLE = os.path.join(LOCAL_PATH, "people_wikidata.json")
 		ENWIKI = os.path.join(LOCAL_PATH, "enwiki_5000_lines.xml")
 
 	else: # running in the cluster

@@ -73,7 +73,7 @@ def main(**params):
 
 	print(df.printSchema())
 
-	overview_df = df.rdd.map(lambda r: Row(r["id"], r["name"], r["wiki-title"], r["gender"], r["occupation"], get_overview(r["text"]))).toDF()
+	overview_df = df.rdd.map(lambda r: Row(r["id"], r["name"], r["wiki-title"], r["gender"], r["occupation"], clear_overview(get_overview(r["text"])))).toDF()
 	overview_df = overview_df.toDF("id", "name", "wiki-title", "gender", "occupation", "overview")
 
 	if local:
