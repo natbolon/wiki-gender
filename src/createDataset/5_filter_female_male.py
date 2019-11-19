@@ -6,6 +6,8 @@ from datetime import datetime
 import re
 from params import *
 
+FEMALE = 'Q6581072'
+MALE = 'Q6581097'
 
 def main(**params):
 	params = dict(
@@ -42,7 +44,10 @@ def main(**params):
 		print("="*50)
 
 	# filter and keep only people with female (Q6581072) and male (Q6581097) genders
-	df_fem_male = df.filter((col("gender") == 'Q6581097') | (col("gender") == 'Q6581072'))
+	df_fem_male = df.filter((col("gender") == MALE) | (col("gender") == FEMALE))
+	df_fem = df_fem_male.filter(col("gender") == FEMALE)
+	df_male = df_fem_male.filter(col("gender") == MALE)
+
 
 	if local:
 		df_fem_male.select("gender").distinct().show()
@@ -58,6 +63,9 @@ def main(**params):
 
 	# save the df
 	df_fem_male.write.mode('overwrite').json(os.path.join(LOCAL_PATH, "wikipedia_male_female.json"))
+	df_fem.write.mode('overwrite').json(os.path.join(LOCAL_PATH, "wikipedia_female.json"))
+	df_male.write.mode('overwrite').json(os.path.join(LOCAL_PATH, "wikipedia_male.json"))
+
 
 	# woohoo!
 	print("!!!!!!!!!!!!!!!")
