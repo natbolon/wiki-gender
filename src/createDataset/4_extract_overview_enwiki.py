@@ -9,8 +9,11 @@ from params import *
 
 def clear_overview(dirty_overview):
     # remove the <ref> </ref>
-    overview = re.sub('<ref.*</ref>', '', dirty_overview)
-    overview = re.sub('<ref.*/>', '', overview)
+    overview = re.sub(r'(?s)<ref.*?</ref>', '', dirty_overview)
+    overview = re.sub(r'(?s)<ref.*?/>', '', overview)
+
+    # remove the <!-- -->: comments from editors
+    overview = re.sub('<!--.*?-->', '', overview)
 
     # remove {{ }} and what is inside
     overview = re.sub('[\{].*[\}]', '', overview)
@@ -27,6 +30,9 @@ def clear_overview(dirty_overview):
 
     # remove \n
     overview = re.sub('\n', '', overview)
+
+    # remove quotes (usually corresponding to titles, not biographical traits)
+    overview = re.sub('\".*?\"', '', overview)
     
     return overview
 
