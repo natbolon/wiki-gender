@@ -67,7 +67,7 @@ def main(**params):
     if local:
         subjectivity_lexicon.show()
 
-    df_fem = spark.read.json(WIKI_FEM)
+    df_fem = spark.read.json(WIKI_MALE)
 
     if local:
         df_fem.show()
@@ -113,8 +113,8 @@ def main(**params):
         print("="*50)
 
     # save the df
-    df_fem_final.write.mode('overwrite').json(os.path.join(LOCAL_PATH, "wikipedia_female_adjectives.json"))
-    adjectives_count.repartition(1).write.mode('overwrite').json(os.path.join(LOCAL_PATH, "count_female_adjectives.json"))
+    df_fem_final.write.mode('overwrite').json(os.path.join(LOCAL_PATH, "wikipedia_male_adjectives.json"))
+    adjectives_count.repartition(1).write.mode('overwrite').json(os.path.join(LOCAL_PATH, "count_male_adjectives.json"))
 
     # woohoo!
     print("!!!!!!!!!!!!!!!")
