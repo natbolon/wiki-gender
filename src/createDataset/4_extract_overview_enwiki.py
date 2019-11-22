@@ -39,14 +39,14 @@ def clear_overview(dirty_overview):
 
 def get_overview(text):
 	# starting_expr = re.compile("'''")
-	starting_expr = re.compile("(?<=''')[0-9A-Za-z]")
+	# starting_expr = re.compile("(?<=''')[0-9A-Za-z]")
 	ending_expr = re.compile("==")
 	ending_expr_cat = re.compile("\[\[Category:") # entries that don't have another section 
 	
-	try:
-		starting_idx = starting_expr.search(text).span()[0]
-	except:
-		starting_idx = None
+	# try:
+	# 	starting_idx = starting_expr.search(text).span()[0]
+	# except:
+	# 	starting_idx = None
 	try:
 		ending_idx = ending_expr.search(text).span()[0]
 	except:
@@ -55,7 +55,7 @@ def get_overview(text):
 		except:
 			ending_idx = None
 
-	overview = text[starting_idx:ending_idx]
+	overview = text[:ending_idx]
 	return clear_overview(overview)
 
 
