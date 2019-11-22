@@ -46,15 +46,23 @@ def main(**params):
     )
 
     local = params['local']
+    female = params['female']
+    male = params['male']
+
+    assert female ^ male, "you have to specify either female --f OR male --m"
+
+    if female:
+        GENDER = "female"
+    if male:
+        GENDER = "male"
 
     if local:
         LOCAL_PATH = "../data/"
-        WIKI_FEM = os.path.join(LOCAL_PATH, "wikipedia_female_sample.json")
-        WIKI_MALE = os.path.join(LOCAL_PATH, "wikipedia_male_sample.json")
+        WIKIPEDIA = os.path.join(LOCAL_PATH, "wikipedia_"+ GENDER +"_sample.json")
     else: # running in the cluster
         LOCAL_PATH = "hdfs:///user/gullon/"
-        WIKI_FEM = os.path.join(LOCAL_PATH, "wikipedia_female.json")
-        WIKI_MALE = os.path.join(LOCAL_PATH, "wikipedia_male.json")
+        WIKIPEDIA = os.path.join(LOCAL_PATH, "wikipedia_"+ GENDER +".json")
+
 
     spark = SparkSession.builder.getOrCreate()
     sc = spark.sparkContext
@@ -67,7 +75,7 @@ def main(**params):
     if local:
         subjectivity_lexicon.show()
 
-    df_fem = spark.read.json(WIKI_FEM)
+    df_fem = spark.read.json(WIKIPEDIA)
 
     if local:
         df_fem.show()
@@ -76,45 +84,45 @@ def main(**params):
     # get the adjectives
     udf_get_adj = udf(get_adjectives)
 
-    df_fem_with_adj = df_fem.withColumn("adjectives", udf_get_adj("overview"))
+    df_with_adj = df_fem.withColumn("adjectives", udf_get_adj("overview"))
 
     if local:
-        df_fem_with_adj.select("id", "adjectives").show()
+        df_with_adj.select("id", "adjectives").show()
     else:
         print("="*50)
         print("Got adjectives!")
         print("="*50)
 
-    df_fem_with_adj = df_fem_with_adj.withColumn("adjectives", explode(split(regexp_replace(regexp_replace\
-        (regexp_replace(regexp_replace(df_fem_with_adj['adjectives'], '\\[', ''), '\\]', ''), ' ', ''),"'", ""), ",")))
+    df_with_adj = df_with_adj.withColumn("adjectives", explode(split(regexp_replace(regexp_replace\
+        (regexp_replace(regexp_replace(df_with_adj['adjectives'], '\\[', ''), '\\]', ''), ' ', ''),"'", ""), ",")))
 
-    df_fem_with_adj = df_fem_with_adj.filter(col("adjectives") != '')
+    df_with_adj = df_with_adj.filter(col("adjectives") != '')
 
-    df_fem_filtered_adj = subjectivity_lexicon.join(df_fem_with_adj, ['adjectives'], how='inner')
-    adjectives_count = df_fem_filtered_adj.groupBy("adjectives").agg(count("*").alias("count")).sort(desc("count"))
-    df_fem_filtered_adj = df_fem_filtered_adj.dropDuplicates()
+    df_filtered_adj = subjectivity_lexicon.join(df_with_adj, ['adjectives'], how='inner')
+    adjectives_count = df_filtered_adj.groupBy("adjectives").agg(count("*").alias("count")).sort(desc("count"))
+    df_filtered_adj = df_filtered_adj.dropDuplicates()
 
     if local:
-        df_fem_filtered_adj.show()
+        df_filtered_adj.show()
         adjectives_count.show()
     else:
         print("="*50)
         print("Adjectives filtered!")
         print("="*50)
 
-    df_fem_adj_list = df_fem_filtered_adj.groupBy("id").agg(collect_list(df_fem_filtered_adj['adjectives']).alias("adjectives"))
-    df_fem_final = df_fem_adj_list.join(df_fem, ['id'], how='inner')
+    df_adj_list = df_filtered_adj.groupBy("id").agg(collect_list(df_filtered_adj['adjectives']).alias("adjectives"))
+    df_final = df_adj_list.join(df_fem, ['id'], how='inner')
     
     if local:
-        df_fem_final.show()
+        df_final.show()
     else:
         print("="*50)
         print("Got final dataframe!")
         print("="*50)
 
     # save the df
-    df_fem_final.write.mode('overwrite').json(os.path.join(LOCAL_PATH, "wikipedia_female_adjectives.json"))
-    adjectives_count.repartition(1).write.mode('overwrite').json(os.path.join(LOCAL_PATH, "count_female_adjectives.json"))
+    df_final.write.mode('overwrite').json(os.path.join(LOCAL_PATH, "wikipedia_" + GENDER + "_adjectives.json"))
+    adjectives_count.repartition(1).write.mode('overwrite').json(os.path.join(LOCAL_PATH, "count_" + GENDER + "_adjectives.json"))
 
     # woohoo!
     print("!!!!!!!!!!!!!!!")
