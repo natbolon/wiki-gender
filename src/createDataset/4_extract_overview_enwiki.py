@@ -38,7 +38,8 @@ def clear_overview(dirty_overview):
 
 
 def get_overview(text):
-	starting_expr = re.compile("'''")
+	# starting_expr = re.compile("'''")
+	starting_expr = re.compile("(?<=''')[0-9A-Za-z]")
 	ending_expr = re.compile("==")
 	ending_expr_cat = re.compile("\[\[Category:") # entries that don't have another section 
 	
