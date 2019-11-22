@@ -19,6 +19,15 @@
 `hadoop fs -put {filename.txt}  `
 
 
+## Usefull commands from tutorial
+`hadoop fs -ls` list the files in your HDFS home directory
+
+`hadoop fs -put file.txt` copy a file from the regular file system to HDFS
+
+`hadoop fs -get hdfs_file_name local_file_name` copy a file or folder from HDFS to the local file system
+
+`hadoop fs -getmerge hdfs_file_name local_file_name` copy a file from HDFS to the local file system by merging multiple files in 1
+
 
 
 ## Copy files from/to the cluster
@@ -62,6 +71,8 @@
 4. you can see the process of the job you submitted here: http://iccluster040.iccluster.epfl.ch:8088/cluster
 
    (click on the **ID** of your job)
+   
+
 
 ## Run spark-python files locally
 
