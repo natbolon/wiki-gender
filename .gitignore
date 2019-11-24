@@ -5,3 +5,4 @@ run_local.sh
 *.json
 data/gender-index-data-2017-02-26.csv
 data/gender-index-data-2019-11-04.csv
+Wikipedia_Gender.ipynb
