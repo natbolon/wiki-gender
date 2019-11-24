@@ -28,7 +28,7 @@ def main(**params):
 
 	df = spark.read.json(WIKI_DATA)
 
-	# eplode the gender column (create multiple entries for people with a list of genders)
+	# explode the gender column (create multiple entries for people with a list of genders)
 	df = df.withColumn("gender", split(regexp_replace(regexp_replace(regexp_replace(regexp_replace(df['gender'], '\\[', ''), '\\]', ''), ' ', ''),"'", ""), ","))
 
 	# filter people with only 1 gender
