@@ -13,7 +13,6 @@ To handle those categories which are outside of the binary classification, we wi
 - How subjective are the adjectives used to describe the people?
 - Is there evidence of linguistic bias based on the gender of the person being described?
 
-
 # Dataset
 We will use the overview of biographies about men and women in the English Wikipedia. The overview (also known as lead section) is the first section of an article. According to Wikipedia, it should stand on its own as a concise overview of the article’s topic. Wikipedia editors need to focus on what they consider most important about the person, and biases are likely to play a role in this selection process.
 
@@ -21,24 +20,16 @@ The idea is to filter the articles of the wikipedia and keep only the biographie
 
 
 # A list of internal milestones up until project milestone 2
-**Week 1 (4th November):**
+- Collect the dataset (select from the cluster the biographies, save them local) [DONE]
+- Take overview from men and women and the basic information [DONE]
+- Compute statistics about the biographies (by gender and occupation) [DONE]
+- Explore the dataset and perform an initial NLP analysis [DONE]
+- Explore possibilities for the data visualization [NEXT STEPS]
+- Try to predict whether a given words (gender neutral) from a biography are from a man or a woman [DONE]
 
-- Collect the dataset (select from the cluster the biographies, save them local)
-- Take overview from men and women and the basic information
-- Set up initial GitHub structure
+## Milestone 2 available in: `gender_biases_in_wikipedia.ipynb`
 
-**Week 2 (11th November):**
-
-- Compute statistics about the biographies (by gender, year and occupation)
-
-**Week 3 (18th November):**
-
-- Explore the dataset and perform an initial NLP analysis
-- Agree on the metrics
-- Explore possibilities for the data visualization.
-
-**Week 4 (25th November):**
-
-- Try out different tools and metric
-- Try to predict whether a given words (gender neutral) from a biography are from a man or a woman.
-
+# Next steps
+- Validate our results by checking the ratio of the most correlated adjective to a gender (like beautiful for women), to whole dataset (how many female biographies contain that adjective)
+- Explore the source of the bias and the parameters that affect it
+- Implement the data story
