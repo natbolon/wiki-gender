@@ -33,4 +33,5 @@ The idea is to filter the articles of the wikipedia and keep only the biographie
 # Next steps
 - Validate our results by checking the ratio of the most correlated adjective to a gender (like beautiful for women), to whole dataset (how many female biographies contain that adjective)
 - Explore the source of the bias and the parameters that affect it
+- Explore biases among occupations
 - Implement the data story
