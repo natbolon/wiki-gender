@@ -10,10 +10,8 @@ To handle those categories which are outside of the binary classification, we wi
 
 # Research questions
 - Is there an asymmetry in the way men and women are portrayed in the wikipedia?
-- Have we changed along time the choice of words use to describe people?
-- Are there sectors/topics more likely to introduce language biases than others?
 - How subjective are the adjectives used to describe the people?
-- Are there any countries where there are more linguistic biases than others?
+- Is there evidence of linguistic bias based on the gender of the person being described?
 
 
 # Dataset
@@ -31,7 +29,7 @@ The idea is to filter the articles of the wikipedia and keep only the biographie
 
 **Week 2 (11th November):**
 
-- Compute statistics about the biographies (by gender, year and country)
+- Compute statistics about the biographies (by gender, year and occupation)
 
 **Week 3 (18th November):**
 
@@ -43,10 +41,4 @@ The idea is to filter the articles of the wikipedia and keep only the biographie
 
 - Try out different tools and metric
 - Try to predict whether a given words (gender neutral) from a biography are from a man or a woman.
-
-
-# Questions for TAs
-* How can we access and use the wikipedia dataset in the cluster?
-* Is the scope of the project too wide? 
-* Can we use the Subjectivity Lexicon from [https://mpqa.cs.pitt.edu/lexicons/subj_lexicon/] in our study to classify words? 
 
