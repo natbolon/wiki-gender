@@ -27,7 +27,7 @@ The idea is to filter the articles of the wikipedia and keep only the biographie
 - Explore possibilities for the data visualization [NEXT STEPS]
 - Try to predict whether a given words (gender neutral) from a biography are from a man or a woman [DONE]
 
-## Milestone 2 available in [here](gender_biases_in_wikipedia.ipynb): 
+## Milestone 2 available [here](gender_biases_in_wikipedia.ipynb): 
 `gender_biases_in_wikipedia.ipynb`
 
 # Next steps
