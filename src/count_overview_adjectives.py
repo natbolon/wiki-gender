@@ -5,6 +5,7 @@ from params import *
 import os
 import json
 import spacy
+import sys
 
 
 # nlp = spacy.load('en')
@@ -39,6 +40,13 @@ def get_adjectives(overview):
     adjs = [token.lemma_ for token in doc if is_adjective(token)]
     return adjs
 
+def get_nouns(overview):
+    # get data to perform nlp analysis
+    doc = nlp(overview)
+    # get lemma of the adjectives that are in the subjectivity lexicon
+    nouns = [token.lemma_ for token in doc if is_noun(token)]
+    return nouns
+
 
 def main(**params):
     params = dict(
@@ -63,7 +71,6 @@ def main(**params):
         LOCAL_PATH = "hdfs:///user/gullon/"
         WIKIPEDIA = os.path.join(LOCAL_PATH, "wikipedia_"+ GENDER +".json")
 
-
     spark = SparkSession.builder.getOrCreate()
     sc = spark.sparkContext
 
@@ -75,32 +82,48 @@ def main(**params):
     if local:
         subjectivity_lexicon.show()
 
-    df_fem = spark.read.json(WIKIPEDIA)
+    df = spark.read.json(WIKIPEDIA)
 
     if local:
-        df_fem.show()
-        df_fem = df_fem.sample(False, 0.003, seed=0)
+        df.show()
+        df = df.sample(False, 0.003, seed=0)
+
+    COMMON_GENDER = os.path.join(LOCAL_PATH, "dict_common_gender_nouns.json")
+
+    common_gender_nouns_txt = sc.textFile(COMMON_GENDER)
+    common_gender_nouns = eval(common_gender_nouns_txt.collect()[0])
+
+    # with open(COMMON_GENDER) as json_file:
+    #     line = json_file.readline()
+    #     common_gender_nouns = json.loads(line)
 
     # get the adjectives
     udf_get_adj = udf(get_adjectives)
+    # get the nouns
+    udf_get_noun = udf(get_nouns)
 
-    df_with_adj = df_fem.withColumn("adjectives", udf_get_adj("overview"))
+    df_with_adj = df.withColumn("adjectives", udf_get_adj("overview"))
+    df_with_noun = df.withColumn("nouns", udf_get_noun("overview"))
 
     if local:
         df_with_adj.select("id", "adjectives").show()
+        df_with_noun.select("id", "nouns").show()
     else:
         print("="*50)
-        print("Got adjectives!")
+        print("Got adjectives and nouns!")
         print("="*50)
 
     df_with_adj = df_with_adj.withColumn("adjectives", explode(split(regexp_replace(regexp_replace\
         (regexp_replace(regexp_replace(df_with_adj['adjectives'], '\\[', ''), '\\]', ''), ' ', ''),"'", ""), ",")))
+    df_with_noun = df_with_noun.withColumn("nouns", explode(split(regexp_replace(regexp_replace(regexp_replace\
+                    (regexp_replace(df_with_noun['nouns'], '\\[', ''), '\\]', ''), ' ', ''),"'", ""), ",")))
 
     df_with_adj = df_with_adj.filter(col("adjectives") != '')
+    df_with_noun = df_with_noun.filter(col("nouns") != '')
 
     df_filtered_adj = subjectivity_lexicon.join(df_with_adj, ['adjectives'], how='inner')
-    adjectives_count = df_filtered_adj.groupBy("adjectives").agg(count("*").alias("count")).sort(desc("count"))
     df_filtered_adj = df_filtered_adj.dropDuplicates()
+    adjectives_count = df_filtered_adj.groupBy("adjectives").agg(count("*").alias("count")).sort(desc("count"))
 
     if local:
         df_filtered_adj.show()
@@ -110,8 +133,28 @@ def main(**params):
         print("Adjectives filtered!")
         print("="*50)
 
+    def get_common_gender_noun(noun):
+        return common_gender_nouns.get(noun, noun)
+
+    # remove gender from nouns
+    udf_gender_nouns = udf(get_common_gender_noun)
+    df_filtered_noun = df_with_noun.withColumn("nouns", udf_gender_nouns("nouns"))
+    df_filtered_noun = df_filtered_noun.dropDuplicates()
+    nouns_count = df_filtered_noun.groupBy("nouns").agg(count("*").alias("count")).sort(desc("count"))
+
+    if local:
+        df_filtered_noun.show()
+        nouns_count.show()
+    else:
+        print("="*50)
+        print("Nouns filtered!")
+        print("="*50)
+
     df_adj_list = df_filtered_adj.groupBy("id").agg(collect_list(df_filtered_adj['adjectives']).alias("adjectives"))
-    df_final = df_adj_list.join(df_fem, ['id'], how='inner')
+    df_noun_list = df_filtered_noun.groupBy("id").agg(collect_list(df_filtered_noun['nouns']).alias("nouns"))
+
+    df_semifinal = df_adj_list.join(df_noun_list, ['id'], how='inner')
+    df_final = df_semifinal.join(df, ['id'], how='inner')
     
     if local:
         df_final.show()
@@ -121,8 +164,9 @@ def main(**params):
         print("="*50)
 
     # save the df
-    df_final.write.mode('overwrite').json(os.path.join(LOCAL_PATH, "wikipedia_" + GENDER + "_adjectives.json"))
-    adjectives_count.repartition(1).write.mode('overwrite').json(os.path.join(LOCAL_PATH, "count_" + GENDER + "_adjectives.json"))
+    df_final.write.mode('overwrite').json(os.path.join(LOCAL_PATH, "wikipedia_" + GENDER + "_nouns_adjectives.json"))
+    adjectives_count.write.mode('overwrite').json(os.path.join(LOCAL_PATH, "count_" + GENDER + "_adjectives.json"))
+    nouns_count.write.mode('overwrite').json(os.path.join(LOCAL_PATH, "count_" + GENDER + "_nouns.json"))
 
     # woohoo!
     print("!!!!!!!!!!!!!!!")
