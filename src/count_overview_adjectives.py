@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 from pyspark.sql import *
 from pyspark.sql.functions import *
 from pyspark import SparkContext
@@ -5,11 +6,9 @@ from params import *
 import os
 import json
 import spacy
+from pyspark.sql.types import StringType
 import sys
 
-
-# nlp = spacy.load('en')
-nlp = spacy.load('en_core_web_sm')
 
 
 def is_noun(token):
@@ -34,13 +33,19 @@ def is_adjective(token):
 
 
 def get_adjectives(overview):
+    global nlp
+    if not nlp:
+        nlp = spacy.load('en_core_web_sm')
     # get data to perform nlp analysis
     doc = nlp(overview)
     # get lemma of the adjectives that are in the subjectivity lexicon
-    adjs = [token.lemma_ for token in doc if is_adjective(token)]
+    adjs = [token.text for token in doc if is_adjective(token)]
     return adjs
 
 def get_nouns(overview):
+    global nlp
+    if not nlp:
+        nlp = spacy.load('en_core_web_sm')
     # get data to perform nlp analysis
     doc = nlp(overview)
     # get lemma of the adjectives that are in the subjectivity lexicon
@@ -71,6 +76,9 @@ def main(**params):
         LOCAL_PATH = "hdfs:///user/gullon/"
         WIKIPEDIA = os.path.join(LOCAL_PATH, "wikipedia_"+ GENDER +".json")
 
+    global nlp
+    nlp = None
+
     spark = SparkSession.builder.getOrCreate()
     sc = spark.sparkContext
 
@@ -93,14 +101,10 @@ def main(**params):
     common_gender_nouns_txt = sc.textFile(COMMON_GENDER)
     common_gender_nouns = eval(common_gender_nouns_txt.collect()[0])
 
-    # with open(COMMON_GENDER) as json_file:
-    #     line = json_file.readline()
-    #     common_gender_nouns = json.loads(line)
-
     # get the adjectives
-    udf_get_adj = udf(get_adjectives)
+    udf_get_adj = udf(get_adjectives, StringType())
     # get the nouns
-    udf_get_noun = udf(get_nouns)
+    udf_get_noun = udf(get_nouns, StringType())
 
     df_with_adj = df.withColumn("adjectives", udf_get_adj("overview"))
     df_with_noun = df.withColumn("nouns", udf_get_noun("overview"))
@@ -137,7 +141,7 @@ def main(**params):
         return common_gender_nouns.get(noun, noun)
 
     # remove gender from nouns
-    udf_gender_nouns = udf(get_common_gender_noun)
+    udf_gender_nouns = udf(get_common_gender_noun, StringType())
     df_filtered_noun = df_with_noun.withColumn("nouns", udf_gender_nouns("nouns"))
     df_filtered_noun = df_filtered_noun.dropDuplicates()
     nouns_count = df_filtered_noun.groupBy("nouns").agg(count("*").alias("count")).sort(desc("count"))
