@@ -49,3 +49,26 @@ def adj_stats_df(df_nlp):
 	                        df_adj_stats['adjective_len']/df_adj_stats['overview_len'])
 
 	return df_adj_stats
+
+
+
+def subjectivity_strength(df):
+    """
+    compute number of adjectives per strength and subjectivity used in the overviews
+    """
+    # count adj per strength and subjectivity
+    overview_subjectivity = df.groupBy('strength', 'subjectivity').\
+    agg(sum('count').alias('sum_')).orderBy(desc('sum_'))
+    
+    overview_subjectivity = overview_subjectivity.replace('', 'None')
+    
+    # compute percentage of adj in the strongly subjective category
+    strong_adj = df.where((col("strength") == "strongsubj")).\
+    groupBy('strength', 'subjectivity').agg({'count':'sum'}).\
+    where((col("subjectivity") == "positive") | (col("subjectivity") == "negative"))
+    
+    strong_adj = strong_adj.\
+    withColumn("percentage", 100*strong_adj['sum(count)']/ df.agg({'count':'sum'}).\
+               collect()[0][0])
+
+    return overview_subjectivity, strong_adj
