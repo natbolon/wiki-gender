@@ -44,13 +44,3 @@ def viz_wordcloud(wc_male, wc_fem):
     ax[1].imshow(wc_fem, cmap=plt.cm.gray, interpolation="bilinear")
     ax[1].axis("off")
     plt.show()
-
-
-############
-# import importlib
-# import word_cloud
-# importlib.reload(word_cloud)
-
-# word_to_color_dict = word_to_color(subjectivity_dictionary)
-
-# wc_male   = generate_wordcloud("../data/male.png", adj_male_dict, word_to_color_dict)
