@@ -1,6 +1,6 @@
 from pyspark.sql import *
 from pyspark.sql.functions import *
-from pyspark.sql.types import IntegerType
+from pyspark.sql.types import IntegerType, StringType
 from pyspark.sql.functions import udf
 
 import numpy as np
@@ -10,6 +10,16 @@ def translate(mapping):
     def translate_(col):
         return mapping.get(col, "other")
     return udf(translate_, StringType())
+
+# get total number of adjectives per overview
+def get_nb_adjs(list_adj):
+    return len(list_adj)
+
+# compute statistics
+def stats_nb_adj(df, gender):
+    count_adj = df.agg(mean(col("nb-adjs")), stddev(col("nb-adjs"))).collect()
+    print('{}\t| Average num of adjectives: {:.2f} | Std of the num of adjectives: {:.2f}'.\
+          format(gender, count_adj[0][0], count_adj[0][1]) )
 
 # function to get the name of the tables in registerTempTanble
 def spark_sql(df, df_name, query, spark):

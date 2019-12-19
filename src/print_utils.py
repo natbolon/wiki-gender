@@ -38,3 +38,23 @@ def plot_overview_len(overview_len_pd):
 	pl_male.set_xlabel('Length')
 	pl_male.set_ylabel('Frequency')
 	plt.show()
+
+def plot_coefficient_score(words_presence, df_coef_adj_nouns, num_words = 5, freq=False):
+
+	wordArray = ['words', 'count_female', 'count_male']
+	
+	if freq:
+		wordArray = ['words', 'freq_female', 'freq_male']
+
+
+	f, ax = plt.subplots(1, 2, figsize=(15,5))
+	words_presence[words_presence.words.isin(df_coef_adj_nouns.head(num_words)['word'].tolist())][wordArray].\
+	plot(kind='bar', x='words', ax=ax[0], rot=0)
+	words_presence[words_presence.words.isin(df_coef_adj_nouns.tail(num_words)['word'].tolist())][wordArray].\
+	plot(kind='bar', x='words', ax=ax[1], rot=0)
+
+	ax[0].set_title('Higher coefficient score')
+	ax[1].set_title('Lower coefficient score')
+	ax[0].set_ylabel('# biographies containing the word')
+	ax[1].set_ylabel('# biographies containing the word')
+	plt.show()
