@@ -22,7 +22,7 @@ We will use the overview of biographies about men and women in the English Wikip
 
 We filtered the articles of the wikipedia and keep only the biographies (we expect it will be approximately 25% of the whole wikipedia).
 
-## Project's Notebook available [here](gender_biases_in_wikipedia.ipynb): 
+# Project's Notebook available [here](gender_biases_in_wikipedia.ipynb): 
 The complete notebook can be found on our Repository's main page, it is called:
 `gender_biases_in_wikipedia.ipynb`
 
