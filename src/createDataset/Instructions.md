@@ -8,6 +8,8 @@
 
    -------------------
 
-3. Filter the English Wikipedia entries (xml file in the cluster - `hdfs:///datasets/enwiki-20191001/enwiki-20191001-pages-articles-multistream.xml`) by the title extracted in the previous step. We saved the attributes and the whole biography into a file called: `biographies_wikipedia.json`. To do that, we run the file: **`3_filter_people_enwiki.py`.**
+3. Filter the English Wikipedia entries (xml file in the cluster - `hdfs:///datasets/enwiki-20191001/enwiki-20191001-pages-articles-multistream.xml`) by the title extracted in the previous step. We saved the attributes and the whole biography into a file called: `biographies_wikipedia.json`. To do that, we run the file: **`3_filter_people_enwiki.py`**.
 
-4. Finally, we extract the overview of those entries and create the **final** dataset called: `overview_wikipedia.json`. To do that, we run the file **`4_extract_overview_enwiki.py`**
+4. Finally, we extract the overview of those entries and create the **final** dataset called: `overview_wikipedia.json`. To do that, we run the file **`4_extract_overview_enwiki.py`**.
+
+5. After a first analysis of the gender's distribution, we filter the entries that are females or males and drop the other genders. This create 3 dataset, one with the whole data called `wikipedia_male_female.json`, one with only females called `wikipedia_female.json` and one with only males called `wikipedia_male.json`. To do that, we run the file **`5_filter_female_male.py`**.
