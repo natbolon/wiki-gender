@@ -5,12 +5,6 @@ from pyspark.sql.functions import udf
 
 import numpy as np
 
-# Create function to translate a code into a category
-def translate(mapping):
-    def translate_(col):
-        return mapping.get(col, "other")
-    return udf(translate_, StringType())
-
 # get total number of adjectives per overview
 def get_nb_adjs(list_adj):
     return len(list_adj)
