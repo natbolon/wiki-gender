@@ -6,7 +6,7 @@ Wikipedia has become one of the greatest sources of information over the last de
 
 We used the overview section of the biography articles in English Wikipedia to train several machine learning models to detect language asymmetries in the way men and women are depicted. 
 
-By analyzing different parts of speech like adjectives and nouns in the overview, the models were able to predict a biography's gender, revealing that gender biases do exist on Wikipedia. 
+By analyzing different parts of speech like adjectives and nouns in the overview, the models are able to predict the gender of the person, revealing that gender biases do exist on Wikipedia. 
 
 Furthermore, we present the models' results in an easy, non-technical data story. 
 
@@ -19,11 +19,11 @@ Furthermore, we present the models' results in an easy, non-technical data story
   
 
 # Dataset
-We will use the overview of biographies about men and women in the English Wikipedia. The overview (also known as lead section) is the first section of an article. According to Wikipedia, it should stand on its own as a concise overview of the article’s topic. Wikipedia editors write on this section what they consider most important about the person, so biases are likely to play a role in this selection process.
+We use the overview of biographies about men and women in the English Wikipedia. The overview (also known as lead section) is the first section of an article. According to Wikipedia, it should stand on its own as a concise overview of the article’s topic. Wikipedia editors write on this section what they consider most important about the person, so biases are likely to play a role in this selection process.
 
 We filtered the articles of the wikipedia and keep only the biographies (we expect it will be approximately 25% of the whole wikipedia).
 
-# Project's Notebook available [here](gender_biases_in_wikipedia.ipynb): 
+# Project's Notebook available [here](gender_biases_in_wikipedia.ipynb)
 The complete notebook can be found on our Repository's main page, it is called:
 `gender_biases_in_wikipedia.ipynb`
 
