@@ -14,8 +14,9 @@ Furthermore, we present the models' results in an easy, non-technical data story
 - How subjective are the adjectives used to describe people on English Wikipedia?
 - Is there evidence of linguistic and topic bias based on the gender of the person being described?
 - Is there an asymmetry in the way men and women are portrayed in the wikipedia? If it does:
- - Can we find a robust statistical way to measure it?
- - Is the bias present in all fields of occupation?
+  - Can we find a robust statistical way to measure it?
+  - Is the bias present in all fields of occupation?
+  
 
 # Dataset
 We will use the overview of biographies about men and women in the English Wikipedia. The overview (also known as lead section) is the first section of an article. According to Wikipedia, it should stand on its own as a concise overview of the article’s topic. Wikipedia editors write on this section what they consider most important about the person, so biases are likely to play a role in this selection process.
