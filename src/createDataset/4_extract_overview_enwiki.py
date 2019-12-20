@@ -18,7 +18,7 @@ def clear_overview(dirty_overview):
     # remove {{ }} and what is inside
     overview = re.sub('[\{].*[\}]', '', overview)
     
-    # reomve [[File: ]] and [[Image: ]] and what is inside
+    # remove [[File: ]] and [[Image: ]] and what is inside
     overview = re.sub('\[\[File:.*?\]\]', '', overview)
     overview = re.sub('\[\[Image:.*?\]\]', '', overview)
 
