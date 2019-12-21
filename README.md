@@ -31,4 +31,10 @@ The complete notebook can be found on our Repository's main page, it is called:
 Take a look to the Data story we created for this project. It can be found in the following URL:
 https://wiki-gender.github.io/
 
+# Team distribution:
+- Natalia: data filtering, model for bias detection, results exploration
+- Sofia: data extraction, empath, visualization
+- Irene: bias per occupation, data story
+- Natalie: data story, results visualization 
+
 
